@@ -1,8 +1,14 @@
 ---
 // Nav — minimal variant, 52px sticky strip.
-// showSections=false on /privacy and /terms: those pages have no #mission or
-// #features to scroll to, and a link that looks live but does nothing is worse
-// than no link. saboteur-sites/sections/nav/variant-minimal.html
+//
+// Two kinds of link. Section anchors (#mission, #features, #status) only
+// resolve on the landing page, so showSections={false} drops them on standalone
+// pages — /privacy, /terms, /blog, a post. Site routes (/blog) resolve
+// everywhere and render unconditionally: dropping the route on those pages
+// would strand the reader with only the mark to get back.
+//
+// Four links is the ceiling, anchors and routes counted together. This nav is
+// at it. saboteur-sites/sections/nav/README.md §Rules 7.
 interface Props {
   showSections?: boolean;
 }
@@ -16,24 +22,31 @@ const { showSections = true } = Astro.props;
     </span>
   </a>
 
-  {showSections && (
-    <ul class="ml-auto flex items-center gap-5">
-      <li>
-        <a href="#mission" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
-          Mission
-        </a>
-      </li>
-      <li>
-        <a href="#features" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
-          Features
-        </a>
-      </li>
-      <li>
-        <a href="#status" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
-          Status
-        </a>
-      </li>
-    </ul>
-  )}
+  <ul class="ml-auto flex items-center gap-5">
+    {showSections && (
+      <>
+        <li>
+          <a href="#mission" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
+            Mission
+          </a>
+        </li>
+        <li>
+          <a href="#features" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
+            Features
+          </a>
+        </li>
+        <li>
+          <a href="#status" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
+            Status
+          </a>
+        </li>
+      </>
+    )}
+    <li>
+      <a href="/blog" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
+        Blog
+      </a>
+    </li>
+  </ul>
 
 </nav>

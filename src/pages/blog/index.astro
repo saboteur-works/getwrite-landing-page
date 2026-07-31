@@ -1,0 +1,115 @@
+---
+// /blog — the post index.
+//
+// Unpaginated by design. Past ~20 posts, paginate with Astro's paginate() and
+// give every page a SELF-REFERENTIAL canonical (/blog/2 canonicals to /blog/2,
+// never back to /blog). See saboteur-sites/sites/landing-page/content-surfaces.md.
+import { getCollection } from "astro:content";
+import Base from "../../layouts/Base.astro";
+import Nav from "../../components/Nav.astro";
+import LegalFooter from "../../components/LegalFooter.astro";
+
+// Must match Base.astro's SITE_NAME.
+const SITE_NAME = "GetWrite";
+
+// Drafts render in `astro dev` so you can read a post while writing it, and are
+// dropped from `astro build` so they cannot reach a live URL. import.meta.env
+// .PROD is false in dev and true in a build, which is the whole mechanism.
+//
+// Do not simplify this to `!data.draft` — that hides drafts from you too, and
+// the next person to want a preview will delete the filter entirely, which is
+// how an unfinished post ships.
+const posts = (
+  await getCollection("blog", ({ data }) => !import.meta.env.PROD || !data.draft)
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  });
+
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+const DESCRIPTION =
+  "Notes on building a local-first writing tool: file formats, editor internals, and the decisions behind them. Written by the person who builds it.";
+
+// Describes the page as it renders: a blog index published by the entity.
+// No blogPost array — the posts are listed once, in the markup.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  name: `${SITE_NAME} — Blog`,
+  // Same sentence as the description prop below.
+  description: DESCRIPTION,
+  url: new URL("/blog", Astro.site).toString(),
+  publisher: {
+    "@type": "Organization",
+    name: "Saboteur LLC",
+    url: "https://saboteur.dev",
+  },
+};
+---
+<Base
+  title={`Blog — ${SITE_NAME}`}
+  description={DESCRIPTION}
+  jsonLd={jsonLd}
+>
+  <Nav showSections={false} />
+
+  <main id="main" class="px-6 py-14">
+    <div class="mx-auto max-w-[68ch]">
+      <h1
+        class="font-display font-bold text-fg-primary text-[clamp(28px,6vw,40px)] tracking-[-0.03em] leading-[1.1] mb-5"
+      >
+        Blog
+      </h1>
+
+      <p class="font-sans text-[15px] leading-[1.75] text-fg-secondary mb-12">
+        Notes on building GetWrite — file formats, editor internals, and the decisions I had to defend. Not release announcements, and not advice about writing.
+      </p>
+
+      {posts.length === 0 ? (
+        <p class="font-mono text-[10px] tracking-[0.14em] uppercase text-fg-tertiary">
+          Nothing published yet.
+        </p>
+      ) : (
+        <ul class="list-none p-0 m-0">
+          {posts.map((post) => (
+            <li class="border-t border-brand-rule py-[18px] last:border-b">
+              <a href={`/blog/${post.id}`} class="group block no-underline">
+                <time
+                  datetime={iso(post.data.pubDate)}
+                  class="font-mono text-[10px] tracking-[0.14em] uppercase text-fg-tertiary block mb-2"
+                >
+                  {fmt(post.data.pubDate)}
+                </time>
+                <h2
+                  class="font-display font-bold text-fg-primary text-[19px] tracking-[-0.02em] leading-[1.25] mb-2 group-hover:text-brand-red transition-colors duration-150"
+                >
+                  {post.data.title}
+                </h2>
+                <p class="font-sans text-[13px] leading-[1.7] text-fg-secondary">
+                  {post.data.description}
+                </p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <p class="mt-12">
+        <a
+          href="/rss.xml"
+          class="font-mono text-[10px] tracking-[0.14em] uppercase text-fg-tertiary hover:text-fg-primary transition-colors duration-150 no-underline"
+        >
+          RSS →
+        </a>
+      </p>
+    </div>
+  </main>
+
+  <LegalFooter />
+</Base>

@@ -14,6 +14,8 @@ interface Props {
   ogImageWidth?: number;
   ogImageHeight?: number;
   ogImageAlt?: string;
+  /** "website" for a landing or index page, "article" for a blog post. */
+  ogType?: string;
   /** JSON-LD object. Per-variant shapes: saboteur-sites/tech/seo.md */
   jsonLd?: Record<string, unknown>;
 }
@@ -28,6 +30,7 @@ const {
   ogImageWidth = 1200,
   ogImageHeight = 630,
   ogImageAlt,
+  ogType = "website",
   jsonLd,
 } = Astro.props;
 
@@ -51,6 +54,7 @@ const jsonLdText = jsonLd
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title="Blog" href="/rss.xml" />
 
     {/* brand-black. A hex literal is unavoidable here — meta content can't read a CSS token. */}
     <meta name="theme-color" content="#0A0A0A" />
@@ -59,7 +63,7 @@ const jsonLdText = jsonLd
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     {ogImageUrl && (
       <>
         <meta property="og:image" content={ogImageUrl} />
