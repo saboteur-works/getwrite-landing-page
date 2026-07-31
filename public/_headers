@@ -1,0 +1,34 @@
+# Cloudflare Pages headers. Match lines are literal paths or absolute URLs;
+# indented lines are the headers applied to that match.
+# Docs: https://developers.cloudflare.com/pages/configuration/headers/
+
+# Keep preview and branch deploys out of the search index. They are near-exact
+# duplicates of production and would compete with it. Two rules are needed: a
+# placeholder stops at a period, so it can't span both label shapes.
+#
+# This is load-bearing under Git integration: every branch push gets its own
+# preview URL. Without these rules, each one is an indexable duplicate of
+# saboteur.dev — the doorway-page risk described in saboteur-sites/tech/seo.md.
+#   <project>.pages.dev
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex, nofollow
+
+#   <branch-or-hash>.<project>.pages.dev
+https://:alias.:project.pages.dev/*
+  X-Robots-Tag: noindex, nofollow
+
+/*
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Permissions-Policy: geolocation=(), microphone=(), camera=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  # Everything is first-party: self-hosted fonts, no external images, no cookies.
+  # 'unsafe-inline' on style-src covers Astro's inlined critical CSS.
+  #
+  # This site has no contact form and no analytics, so form-action stays 'self'
+  # and no third-party script or connect origin is allowed. The outbound links
+  # to offbeat-fm.com and getwrite.app are navigations, not subresource loads,
+  # and need no CSP allowance. If any of that changes, update policy.config.json
+  # in the same commit — the privacy policy makes the matching claim.
+  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'

@@ -2,7 +2,7 @@
 
 Local-first writing studio. Your files, your structure, your disk — no cloud required.
 
-**Status:** In development
+**Status:** Live
 **Domain:** getwrite.app
 **Sub-brand:** SAB/works
 

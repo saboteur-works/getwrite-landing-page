@@ -9,9 +9,38 @@ import "../styles/global.css";
 interface Props {
   title: string;
   description: string;
+  /** Site-root-relative path to the OG card, e.g. "/assets/og-card.png". */
+  ogImage?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
+  ogImageAlt?: string;
+  /** JSON-LD object. Per-variant shapes: saboteur-sites/tech/seo.md */
+  jsonLd?: Record<string, unknown>;
 }
-const { title, description } = Astro.props;
-const canonical = Astro.site?.toString() ?? "";
+
+// The site's name as a person says it, not the domain.
+const SITE_NAME = "GetWrite";
+
+const {
+  title,
+  description,
+  ogImage,
+  ogImageWidth = 1200,
+  ogImageHeight = 630,
+  ogImageAlt,
+  jsonLd,
+} = Astro.props;
+
+// Per-page canonical, not the site root. Astro.site is the production origin, so
+// preview deploys on *.pages.dev still point search engines at production.
+const origin = Astro.site ?? new URL("https://getwrite.app");
+const canonical = new URL(Astro.url.pathname, origin).toString();
+const ogImageUrl = ogImage ? new URL(ogImage, origin).toString() : undefined;
+
+// Escape the closing-tag sequence so page data can never break out of the script.
+const jsonLdText = jsonLd
+  ? JSON.stringify(jsonLd).replace(/</g, "\\u003c")
+  : undefined;
 ---
 <!doctype html>
 <html lang="en">
@@ -22,15 +51,45 @@ const canonical = Astro.site?.toString() ?? "";
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    {/* brand-black. A hex literal is unavoidable here — meta content can't read a CSS token. */}
+    <meta name="theme-color" content="#0A0A0A" />
+
+    <meta property="og:site_name" content={SITE_NAME} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:type" content="website" />
-    <meta name="twitter:card" content="summary_large_image" />
+    {ogImageUrl && (
+      <>
+        <meta property="og:image" content={ogImageUrl} />
+        <meta property="og:image:width" content={String(ogImageWidth)} />
+        <meta property="og:image:height" content={String(ogImageHeight)} />
+        {ogImageAlt && <meta property="og:image:alt" content={ogImageAlt} />}
+      </>
+    )}
+    {/* summary_large_image only when an image actually exists — claiming one
+        without it renders a broken embed. saboteur-sites/tech/seo.md. */}
+    <meta name="twitter:card" content={ogImageUrl ? "summary_large_image" : "summary"} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+    {jsonLdText && (
+      <script type="application/ld+json" is:inline set:html={jsonLdText} />
+    )}
   </head>
-  <body class="bg-brand-black text-brand-white">
+  <body class="bg-brand-black text-fg-primary">
+    {/* Skip link — the first focusable element on every page, per
+        saboteur-sites/compliance/accessibility.md. Visually hidden until
+        focused, then a sized control at top-left. Its target is the #main
+        landmark, which every page must provide. */}
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:inline-block focus:bg-brand-surface focus:text-fg-primary focus:border focus:border-brand-dim focus:px-4 focus:py-2.5 focus:font-mono focus:text-[10px] focus:tracking-[0.14em] focus:uppercase focus:no-underline focus:outline focus:outline-2 focus:outline-brand-red focus:outline-offset-2"
+    >
+      Skip to main content
+    </a>
     <slot />
   </body>
 </html>

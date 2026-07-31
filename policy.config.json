@@ -1,0 +1,47 @@
+{
+  "layout": "../layouts/Legal.astro",
+
+  "tokens": {
+    "last_updated": "2026-07-31",
+    "site_name": "GetWrite",
+    "site_domain": "getwrite.app",
+    "contact_email": "privacy@saboteur.dev",
+    "legal_email": "legal@saboteur.dev",
+    "hosting_provider": "Cloudflare",
+    "analytics_provider": "Cloudflare Web Analytics",
+    "email_provider": "Resend",
+    "log_retention_days": "90",
+    "form_retention_months": "12",
+    "liability_cap": "US$100",
+    "governing_jurisdiction": "the State of Utah, United States",
+    "mailing_address": "7533 S Center View Ct Ste N<br>West Jordan, UT 84084<br>United States",
+    "transfer_statement": "Cloudflare is based in the United States. Where data reaches it from the EU or UK, the transfer is governed by EU Standard Contractual Clauses (SCCs) under its Data Processing Agreement. This is the standard safeguard for transfers to the US after the Schrems II ruling."
+  },
+
+  "_features_note": "This is the GetWrite product landing page: no contact form, no analytics script in the build, no embeds. The only outbound routes are the GitHub releases download and the footer link to the parent site.",
+  "features": {
+    "analytics": false,
+    "contact_form": false,
+    "embeds": false,
+    "newsletter": false,
+    "open_source_content": false
+  },
+
+  "processors": [
+    {
+      "name": "Cloudflare, Inc.",
+      "purpose": "Hosting (Cloudflare Pages) and edge logs.",
+      "location": "United States",
+      "hosts": [],
+      "note": "Contacted as the host, never as a browser request to a Cloudflare domain. No hosts to scan for; leaving `hosts` empty tells the auditor not to expect one."
+    }
+  ],
+
+  "_allowedHosts_note": "Hosts a visitor only reaches by clicking a link. An outbound link is not a data transfer, so these need no disclosure. Anything the browser fetches automatically belongs in `processors` instead.",
+  "allowedHosts": ["github.com", "saboteur.dev"],
+
+  "pages": {
+    "privacy": {},
+    "terms": {}
+  }
+}

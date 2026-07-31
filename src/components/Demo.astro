@@ -1,7 +1,21 @@
 ---
+// Demo — standard section grid (140px label + 1fr), matching every other
+// content section on the page. Single static screenshot, self-hosted under
+// public/assets/, hairline border, no chrome.
+// saboteur-sites/sections/demo/README.md
 ---
 <section class="border-b border-brand-rule px-6 py-14">
-  <img src="/screenshot.png"
-       alt="GetWrite writing interface"
-       class="w-full border border-brand-dim" />
+  <div class="grid grid-cols-1 gap-5 md:grid-cols-[140px_1fr] md:gap-10 items-start">
+
+    <div class="font-mono text-[10px] tracking-[0.2em] text-fg-tertiary uppercase md:pt-1 pb-2 md:pb-0 border-b md:border-b-0 border-brand-rule">
+      Demo
+    </div>
+
+    <figure>
+      <img src="/assets/screenshot.png"
+           alt="GetWrite writing interface"
+           class="w-full border border-brand-dim" />
+    </figure>
+
+  </div>
 </section>

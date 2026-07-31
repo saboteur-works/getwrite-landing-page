@@ -7,16 +7,41 @@ import Features from "../components/Features.astro";
 import Demo from "../components/Demo.astro";
 import Status from "../components/Status.astro";
 import LegalFooter from "../components/LegalFooter.astro";
+
+const description =
+  "Writing software that stays out of your way. Your files stay on your disk, in open formats you can read without GetWrite. No cloud, no subscription, no lock-in.";
+
+// SoftwareApplication is the product variant's shape. The nested publisher is
+// half the parent↔product entity link — see saboteur-sites/tech/seo.md.
+// No offers block: the page states no price, and structured data may only
+// describe what a visitor can see.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "GetWrite",
+  description,
+  url: "https://getwrite.app",
+  applicationCategory: "WritingApplication",
+  publisher: {
+    "@type": "Organization",
+    name: "Saboteur LLC",
+    url: "https://saboteur.dev",
+  },
+};
 ---
 <Base
-  title="GetWrite — Local-First Writing Studio"
-  description="Writing software that stays out of your way. Your files, your structure, your disk — no cloud required."
+  title="GetWrite — Local-first writing studio"
+  description={description}
+  jsonLd={jsonLd}
 >
   <Nav />
-  <Hero />
-  <Mission />
-  <Features />
-  <Demo />
-  <Status />
+  {/* Skip-link target and the page's single main landmark. */}
+  <main id="main">
+    <Hero />
+    <Mission />
+    <Features />
+    <Demo />
+    <Status />
+  </main>
   <LegalFooter />
 </Base>

@@ -1,4 +1,12 @@
 ---
+// Nav — minimal variant, 52px sticky strip.
+// showSections=false on /privacy and /terms: those pages have no #mission or
+// #features to scroll to, and a link that looks live but does nothing is worse
+// than no link. saboteur-sites/sections/nav/variant-minimal.html
+interface Props {
+  showSections?: boolean;
+}
+const { showSections = true } = Astro.props;
 ---
 <nav class="sticky top-0 z-10 bg-brand-black border-b border-brand-rule flex items-center h-[52px] px-6">
 
@@ -8,22 +16,24 @@
     </span>
   </a>
 
-  <ul class="ml-auto flex items-center gap-5">
-    <li>
-      <a href="#mission" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
-        Mission
-      </a>
-    </li>
-    <li>
-      <a href="#features" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
-        Features
-      </a>
-    </li>
-    <li>
-      <a href="#status" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
-        Status
-      </a>
-    </li>
-  </ul>
+  {showSections && (
+    <ul class="ml-auto flex items-center gap-5">
+      <li>
+        <a href="#mission" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
+          Mission
+        </a>
+      </li>
+      <li>
+        <a href="#features" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
+          Features
+        </a>
+      </li>
+      <li>
+        <a href="#status" class="font-mono text-[10px] tracking-[0.14em] text-fg-tertiary hover:text-fg-primary uppercase transition-colors duration-150">
+          Status
+        </a>
+      </li>
+    </ul>
+  )}
 
 </nav>
